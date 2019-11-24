@@ -22,33 +22,71 @@ class App extends React.Component {
     }
   }
 
+  calculateFaceLocation = (data) => {
+    const boundingBox = data.region_info.bounding_box
+
+    const measurements = {
+      top: boundingBox.top_row,
+      left: boundingBox.left_col,
+      right: boundingBox.right_col,
+      bottom: boundingBox.bottom_row
+    }
+
+    return measurements
+  }
+
+  displayFace = (coordinates) => {
+    const imageContainer = document.getElementById('img-container');
+
+    const newDiv = document.createElement('div');
+    newDiv.classList.add('bounding-box')
+    newDiv.style.top = String((coordinates.top * 100) + "%");
+    newDiv.style.left = String((coordinates.left * 100) + "%");
+    newDiv.style.right = String((1 - coordinates.right) * 100 + "%");
+    newDiv.style.bottom = String((1 - coordinates.bottom) * 100 + "%");
+
+    imageContainer.appendChild(newDiv)
+  }
+
   onInputChange = (event) => {
     this.setState({
       input: event.target.value
     })
   }
 
+  removingFaces = () => {
+    const divList = document.getElementById('img-container')
+
+      while (divList.childNodes.length > 1){
+        divList.removeChild(divList.childNodes[1]);
+      }
+  }
+
   onButtonSubmit = () => {
-    this.setState({imageUrl: this.state.input})
-    app.models.predict("a403429f2ddf4b49b307e318f00e528b", "https://samples.clarifai.com/face-det.jpg").then(
-    function(response) {
-      console.log(response)
-    },
-    function(err) {
-      throw err;
-    }
-  );
     
+    this.removingFaces()
+
+    this.setState({imageUrl: this.state.input})
+
+    app.models.predict(Clarifai.FACE_DETECT_MODEL, this.state.input)
+      .then(response =>  {
+        for(let x = 0; x < response.outputs[0].data.regions.length; x++){
+          this.displayFace(this.calculateFaceLocation(response.outputs[0].data.regions[x])) 
+        }
+      })
+      .catch(err => console.log(err));
   }
 
   render() {
     return (
       <div>
         <Particles params={particlesConfig} className='particles'/>
+
         <div className='navbar'>
           <Logo/>
           <Navbar/>
         </div>
+        
         <Searchinput onInputChange={this.onInputChange} onButtonSubmit={this.onButtonSubmit}/>
         <FaceRecognition imgSrc={this.state.imageUrl}/>
       </div>

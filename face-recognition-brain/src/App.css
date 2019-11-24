@@ -33,7 +33,7 @@ p:hover, .navbar img:hover {
   width: 100%;
   display: flex;
   justify-content: center;
-  margin-top: 5%;
+  /* margin-top: 5%; */
 }
 
 input {
@@ -43,6 +43,7 @@ input {
   margin: 0;
   border: 1px solid black;
   transition: box-shadow 300ms;
+  font-size: 20px;
 }
 
 input::placeholder {
@@ -78,3 +79,4 @@ button:active {
 	position:relative;
 	top:1px;
 }
+

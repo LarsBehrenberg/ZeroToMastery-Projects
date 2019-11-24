@@ -1,10 +1,24 @@
 .img-container {
-    display: flex;
-    justify-content: center;
+    position: relative;
+    margin: 0 auto;
+    width: 500px;
     margin-top: 50px;
 }
 
 .img-container img {
-    widows: 400px;
+    width: 500px;
     height: auto;
+}
+
+.bounding-box {
+    position: absolute;
+    box-shadow: 0 0 0 3px #149df2 inset;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    cursor: pointer;
+}
+.bounding-box:hover {
+    background-color: #149df2;
+    opacity: 0.5;
 }

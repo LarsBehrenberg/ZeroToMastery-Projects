@@ -3,8 +3,8 @@ import './face-recognition.css';
 
 const FaceRecognition = ({ imgSrc }) => {
     return (
-        <div className='img-container'>
-            <img src={imgSrc} />
+        <div className='img-container' id="img-container">
+                <img id='face-image' src={imgSrc} />
         </div>
     )
 }
