@@ -1,0 +1,1 @@
+This is a project working with the https://www.clarifai.com/ API to detect face on input pictures
