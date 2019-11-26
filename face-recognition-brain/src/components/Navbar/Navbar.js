@@ -1,10 +1,10 @@
 import React from 'react'
 
-const Navbar = () => {
+const Navbar = ({ isSignedIn, onRouteChange }) => {
 
     return (
         <nav>
-            <p>Sign out</p>
+            {isSignedIn === false ? <div></div> : <p onClick={() => onRouteChange('signin')}>Sign out</p>}
         </nav>
     )
 }

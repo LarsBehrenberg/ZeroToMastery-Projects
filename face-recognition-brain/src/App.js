@@ -3,6 +3,8 @@ import Clarifai from 'clarifai';
 import particlesConfig from './components/ParticleConfig/particlesjs-config';
 import Logo from './components/Logo/Logo';
 import Navbar from './components/Navbar/Navbar';
+import Signin from './components/Signin/Signin';
+import Register from './components/Register/Register';
 import Searchinput from './components/Searchinput/Seachinput';
 import FaceRecognition from './components/FaceRecognition/FaceRecognition';
 import Particles from 'react-particles-js';
@@ -18,7 +20,9 @@ class App extends React.Component {
     super()
     this.state = {
       input: '',
-      imageUrl: ''
+      imageUrl: '',
+      route: 'signin',
+      isSignedIn: false
     }
   }
 
@@ -77,22 +81,38 @@ class App extends React.Component {
       .catch(err => console.log(err));
   }
 
-  render() {
-    return (
-      <div>
-        <Particles params={particlesConfig} className='particles'/>
+  onRouteChange = (route) => {
+    route === 'home' ? this.setState({isSignedIn: true}) : this.setState({isSignedIn: false})
+    this.setState({route: route})
 
-        <div className='navbar'>
-          <Logo/>
-          <Navbar/>
+  }
+
+
+  render() {
+      return (
+        <div>
+          <Particles params={particlesConfig} className='particles'/>
+  
+          <div className='navbar'>
+            <Logo/>
+            <Navbar isSignedIn={this.state.isSignedIn} onRouteChange={this.onRouteChange} />
+          </div>
+
+          {
+          this.state.route === 'signin'
+            ? <Signin onRouteChange={this.onRouteChange}/>
+            : (
+              this.state.route === 'register'
+                ? <Register onRouteChange={this.onRouteChange}/>
+                : <div>
+                    <Searchinput onInputChange={this.onInputChange} onButtonSubmit={this.onButtonSubmit}/>
+                    <FaceRecognition imgSrc={this.state.imageUrl}/>
+                  </div> 
+            )
+          }
         </div>
-        
-        <Searchinput onInputChange={this.onInputChange} onButtonSubmit={this.onButtonSubmit}/>
-        <FaceRecognition imgSrc={this.state.imageUrl}/>
-      </div>
-    )
+      )
   }
   
 }
-
 export default App;
