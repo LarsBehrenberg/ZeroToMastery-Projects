@@ -1,18 +1,19 @@
 .img-container {
     position: relative;
     margin: 0 auto;
-    width: 500px;
+    width: 700px;
     margin-top: 50px;
 }
 
 .img-container img {
-    width: 500px;
+    width: 700px;
     height: auto;
+    border: 1px solid black;
 }
 
 .bounding-box {
     position: absolute;
-    box-shadow: 0 0 0 3px #149df2 inset;
+    box-shadow: 0 0 0 1.5px #149df2 inset;
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
