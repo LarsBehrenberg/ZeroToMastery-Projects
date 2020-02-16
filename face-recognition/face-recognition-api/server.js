@@ -5,17 +5,17 @@ app.use(express.json());
 
 const database = {
     users: [{
-            id: 123,
+            id: '1',
             name: 'john123',
-            password: "pass",
+            password: "john",
             email: 'john@gmx.de',
             entries: 0,
             joined: new Date()
         },
         {
-            id: 456,
+            id: '2',
             name: 'peter12',
-            password: "peeee",
+            password: 'peter',
             email: 'peter@gmx.de',
             entries: 0,
             joined: new Date()
@@ -32,14 +32,15 @@ app.get('/', (req, res) => {
 
 // /login - POST = success/fail
 app.post('/login', (req, res) => {
-    if(req.body.email === database.users[1].email && req.body.password === database.users[1].password){
+    if (req.body.email === database.users[0].email &&
+        req.body.password === database.users[0].password){
         res.json("success")
     } else {
         res.status(400).json("error logging in")
     }
 })
 
-//  /register
+//  /register - POST = user
 app.post('/register', (req, res) => {
     const { name, password, email } = req.body
     database.users.push({
@@ -53,8 +54,46 @@ app.post('/register', (req, res) => {
     res.json(database.users[database.users.length-1])
 })
 
-app.listen(3000, () => {
-    console.log("app is running on port 3000")
+// /profile/:UserID - GET = user
+app.get('/profile/:id', (req, res) => {
+
+    let userFound = false
+
+    database.users.forEach(user => {
+        if (user.id == req.params.id){
+            userFound = true
+            return res.json(user)
+        }
+    })
+
+    if(!userFound){
+        res.status(400).json('user not found')
+    }
+}) 
+
+
+// /image - PUT = put up a counter to change rankings
+app.put('/image', (req, res) => {
+    let userFound = false
+
+    console.log(res)
+
+    database.users.forEach(user => {
+        if (user.id == req.body.id){
+            userFound = true
+            user.entries++
+            return res.json(user.entries)
+        }
+    })
+
+    if(!userFound){
+        res.status(400).json('user not found, entries cannot be incremented')
+    }
+})
+
+
+app.listen(4000, () => {
+    console.log("app is running on port 4000")
 })
 
 
@@ -62,10 +101,6 @@ app.listen(3000, () => {
 /*
 Different paths, that need to be configured:
 
-/ - base root
-/login - POST = success/fail
-/signin - POST = user
-/profile/:UserID - GET = user
-/image - PUT = put up a counter to change rankings
+
 
 */
