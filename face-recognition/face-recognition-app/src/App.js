@@ -5,6 +5,7 @@ import Logo from './components/Logo/Logo';
 import Navbar from './components/Navbar/Navbar';
 import Signin from './components/Signin/Signin';
 import Register from './components/Register/Register';
+import Rank from './components/Rank/Rank';
 import Searchinput from './components/Searchinput/Seachinput';
 import FaceRecognition from './components/FaceRecognition/FaceRecognition';
 import Particles from 'react-particles-js';
@@ -91,8 +92,23 @@ class App extends React.Component {
 
     this.setState({imageUrl: this.state.input})
 
-    app.models.predict(Clarifai.FACE_DETECT_MODEL, this.state.input)
+    app.models
+      .predict(Clarifai.FACE_DETECT_MODEL, this.state.input)
       .then(response =>  {
+        if(response){
+          fetch("http://localhost:4000/image", {
+            method: "put",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({
+              id: this.state.user.id
+            })
+          })
+          .then(response => response.json())
+          .then(count => {
+            this.setState(Object.assign(this.state.user, {entries: count}))
+          })
+        }
+        
         for(let x = 0; x < response.outputs[0].data.regions.length; x++){
           this.displayFace(this.calculateFaceLocation(response.outputs[0].data.regions[x])) 
         }
@@ -119,11 +135,15 @@ class App extends React.Component {
 
           {
           this.state.route === 'signin'
-            ? <Signin onRouteChange={this.onRouteChange}/>
+            ? <Signin onRouteChange={this.onRouteChange} loadUser={this.loadUser}/>
             : (
               this.state.route === 'register'
                 ? <Register onRouteChange={this.onRouteChange} loadUser={this.loadUser}/>
                 : <div>
+                    <Rank 
+                      name={this.state.user.name}
+                      entries={this.state.user.entries}
+                    />
                     <Searchinput onInputChange={this.onInputChange} onButtonSubmit={this.onButtonSubmit}/>
                     <FaceRecognition imgSrc={this.state.imageUrl}/>
                   </div> 
